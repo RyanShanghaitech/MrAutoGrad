@@ -18,14 +18,14 @@
     ```
     def eval():
         global nAx
-        # nAx = 2; return mag.getG_Spiral(bIs3D=0, **argCom) # 0.380s
-        # nAx = 2; return mag.getG_VarDenSpiral(bIs3D=0, **argCom) # 0.499s
-        nAx = 2; return mag.getG_Rosette(bIs3D=0, **argCom) # 16.39s (9 frames)
-        # nAx = 2; return mag.getG_Rosette_Trad(**argCom, dOm1=10*pi, dOm2=8*pi, dTmax=1, dTacq=2e-03) # 16.39s (9 frames)
-        # nAx = 3; return mag.getG_Shell3d(**argCom) # 183.7
-        # nAx = 3; return mag.getG_Yarnball(**argCom) # 196.1
-        # nAx = 3; return mag.getG_Seiffert(**argCom) # 232.9s
-        # nAx = 3; return mag.getG_Cones(**argCom) # 149.9s
+        # nAx = 2; return mag.getG_Spiral(bIs3D=0, **argCom)
+        # nAx = 2; return mag.getG_VarDenSpiral(bIs3D=0, **argCom)
+        nAx = 2; return mag.getG_Rosette(bIs3D=0, **argCom)
+        # nAx = 2; return mag.getG_Rosette_Trad(**argCom, dOm1=10*pi, dOm2=8*pi, dTmax=1, dTacq=2e-03)
+        # nAx = 3; return mag.getG_Shell3d(**argCom)
+        # nAx = 3; return mag.getG_Yarnball(**argCom)
+        # nAx = 3; return mag.getG_Seiffert(**argCom)
+        # nAx = 3; return mag.getG_Cones(**argCom)
     ```
 1. The generated gradient waveform and corresponding gspace curve, trajectory, slew rate and gradient amplitude are shown in the printed figure. The figure is also saved as `figure.pdf` in the root directory in case plotting is unavailable.
 1. Number of iteration and execution time is shown in the command line interface, e.g:
