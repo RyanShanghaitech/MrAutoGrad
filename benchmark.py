@@ -19,14 +19,14 @@ argCom = dict(dFov=fov, lNPix=nPix, dSLim=sLim, dGLim=gLim, dDt=dtGrad)
 
 def eval():
     global nAx
-    # nAx = 2; return mag.getG_Spiral(bIs3D=0, **argCom) # 0.380s
-    # nAx = 2; return mag.getG_VarDenSpiral(bIs3D=0, **argCom) # 0.499s
-    nAx = 2; return mag.getG_Rosette(bIs3D=0, **argCom) # 16.39s (9 frames)
-    # nAx = 2; return mag.getG_Rosette_Trad(**argCom, dOm1=10*pi, dOm2=8*pi, dTmax=1, dTacq=2e-03) # 16.39s (9 frames)
-    # nAx = 3; return mag.getG_Shell3d(**argCom) # 183.7
-    # nAx = 3; return mag.getG_Yarnball(**argCom) # 196.1
-    # nAx = 3; return mag.getG_Seiffert(**argCom) # 232.9s
-    # nAx = 3; return mag.getG_Cones(**argCom) # 149.9s
+    # nAx = 2; return mag.getG_Spiral(bIs3D=0, **argCom)
+    # nAx = 2; return mag.getG_VarDenSpiral(bIs3D=0, **argCom)
+    nAx = 2; return mag.getG_Rosette(bIs3D=0, **argCom)
+    # nAx = 2; return mag.getG_Rosette_Trad(**argCom, dOm1=10*pi, dOm2=8*pi, dTmax=1, dTacq=2e-03)
+    # nAx = 3; return mag.getG_Shell3d(**argCom)
+    # nAx = 3; return mag.getG_Yarnball(**argCom)
+    # nAx = 3; return mag.getG_Seiffert(**argCom)
+    # nAx = 3; return mag.getG_Cones(**argCom)
 
 mag.setTrajRev(0) # don't reverse trajectory
 mag.setGoldAng(1) # use golden angle interleaving if possible
