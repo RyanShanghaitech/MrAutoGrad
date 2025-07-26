@@ -1,0 +1,7 @@
+copy.bash
+figure.pdf
+
+.vscode/
+build/
+dist/
+*.egg-info/
