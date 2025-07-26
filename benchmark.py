@@ -30,6 +30,7 @@ def eval():
 
 mag.setTrajRev(0) # don't reverse trajectory
 mag.setGoldAng(1) # use golden angle interleaving if possible
+mag.setShuf(0) # disable shuffle
 mag.setMaxG0(0) # don't maximize G0
 mag.setMaxG1(0) # don't maximize G1
 mag.setExGEnd(0) # don't ensure exact G0 and G1 for MAG, for fair comparison
