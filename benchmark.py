@@ -36,7 +36,8 @@ mag.setMaxG1(0) # don't maximize G1
 mag.setExGEnd(0) # don't ensure exact G0 and G1 for MAG, for fair comparison
 mag.setMagOs(8) # set temporal oversampling of MAG to 8
 
-lstArrK0, lstArrGrad = eval()
+for i in range(10):
+    lstArrK0, lstArrGrad = eval()
 
 # derive shape parameter
 if nAx==2:
@@ -57,7 +58,7 @@ for arrK0, arrGrad in zip(lstArrK0, lstArrGrad):
     lstArrK.append(arrK)
 
 # k-space and g-space
-iArrK = 0
+iArrK = len(lstArrK)*2//3
 
 figure(figsize=(18,9), dpi=120)
 

@@ -21,7 +21,7 @@ modExt = Extension\
 setup\
 (
     name = 'mrautograd',
-    install_requires = ["numpy", "matplotlib"],
+    install_requires = ["numpy<2.3", "matplotlib"],
     ext_modules = [modExt],
     packages = ["mrautograd", "mrautograd.ext", "mrautograd.ext.core", "mrautograd.ext.traj", "mrautograd.ext.mtg"],
     package_dir = {"mrautograd":"./mrautograd_src/", "mrautograd.ext":"./mrautograd_src/ext/", "mrautograd.ext.core":"./mrautograd_src/ext/mag/", "mrautograd.ext.traj":"./mrautograd_src/ext/traj/", "mrautograd.ext.mtg":"./mrautograd_src/ext/mtg/"},

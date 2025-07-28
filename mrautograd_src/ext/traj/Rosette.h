@@ -57,7 +57,7 @@ public:
         // calculate average ΔTE
         ld ldP;
         TIC;
-        calGrad(&m_v3BaseM0PE, &m_lv3BaseGRO, &ldP, &m_lNWait, &m_lNSamp, m_ptfBaseTraj, m_sGradPara, bMaxG0&&bMaxG1?2:8);
+        calGrad(&m_v3BaseM0PE, &m_lv3BaseGRO, &ldP, &m_lNWait, &m_lNSamp, *m_ptfBaseTraj, m_sGradPara, bMaxG0&&bMaxG1?2:8);
         TOC;
         
         if (ldP.size() != 0)

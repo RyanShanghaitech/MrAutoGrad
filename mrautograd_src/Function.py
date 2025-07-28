@@ -6,7 +6,7 @@ import mrautograd.ext as ext
 
 goldang = (3-sqrt(5))*pi
 
-def calGrad\
+def calGrad4ExFunc\
 (
     bIs3D: bool = False,
     dFov: float64 = 0.256,
@@ -23,7 +23,7 @@ def calGrad\
     p0:float64 = 0e0, 
     p1:float64 = 1e0, 
 ) -> NDArray:
-    return ext.calGrad\
+    return ext.calGrad4ExFunc\
     (
         int64(bIs3D),
         float64(dFov),
@@ -39,6 +39,33 @@ def calGrad\
         
         float64(p0),
         float64(p1), 
+    )
+
+def calGrad4ExSamp\
+(
+    bIs3D: bool = False,
+    dFov: float64 = 0.256,
+    lNPix: int64 = 256,
+    
+    dSLim: float64 = 50 * 42.5756e6 * 0.256 / 256,
+    dGLim: float64 = 50e-3 * 42.5756e6 * 0.256 / 256,
+    dDt: float64 = 10e-6,
+    
+    arrP: NDArray = np.empty((0,1)),
+    arrK: NDArray = np.empty((0,3)),
+) -> NDArray:
+    return ext.calGrad4ExSamp\
+    (
+        int64(bIs3D),
+        float64(dFov),
+        int64(lNPix),
+        
+        float64(dSLim), 
+        float64(dGLim), 
+        float64(dDt), 
+        
+        arrP,
+        arrK
     )
     
 def getG_Spiral\

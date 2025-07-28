@@ -64,7 +64,7 @@ public:
             m_vptfBaseTraj[i] = new Cones_TrajFun(dRhoPhi, dTht0);
             if(!m_vptfBaseTraj[i]) throw std::runtime_error("out of memory");
 
-            calGrad(&m_vv3BaseM0PE[i], &m_vlv3BaseGRO[i], NULL, &m_vlNWait[i], &m_vlNSamp[i], m_vptfBaseTraj[i], m_sGradPara, bMaxG0&&bMaxG1?2:8);
+            calGrad(&m_vv3BaseM0PE[i], &m_vlv3BaseGRO[i], NULL, &m_vlNWait[i], &m_vlNSamp[i], *m_vptfBaseTraj[i], m_sGradPara, bMaxG0&&bMaxG1?2:8);
         }
         TOC;
         

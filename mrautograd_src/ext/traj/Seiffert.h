@@ -190,8 +190,18 @@ public:
         m_ptfBaseTraj = new Seiffert_Trajfunc(dM, dUMax);
         if(!m_ptfBaseTraj) throw std::runtime_error("out of memory");
 
+        int64_t lNTrajSamp = 1000;
+        vv3 vv3TrajSamp(lNTrajSamp);
+        double dP0 = m_ptfBaseTraj->getP0();
+        double dP1 = m_ptfBaseTraj->getP1();
+        for (int64_t i = 0; i < lNTrajSamp; ++i)
+        {
+            double dP = dP0*(lNTrajSamp-i)/double(lNTrajSamp-1) + dP1*(i)/double(lNTrajSamp-1);
+            m_ptfBaseTraj->getK(&vv3TrajSamp[i], dP);
+        }
+
         TIC;
-        calGrad(&m_v3BaseM0PE, &m_lv3BaseGRO, NULL, &m_lNWait, &m_lNSamp, m_ptfBaseTraj, m_sGradPara, bMaxG0&&bMaxG1?2:8);
+        calGrad(&m_v3BaseM0PE, &m_lv3BaseGRO, NULL, &m_lNWait, &m_lNSamp, vv3TrajSamp, m_sGradPara, bMaxG0&&bMaxG1?2:8);
         TOC;
     }
     
