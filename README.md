@@ -1,15 +1,19 @@
 # Magnetic Resonance Automatic Gradient Toolbox (MRAutoGrad, MAG)
 
 ## Usage
-1. To install the pip package of the proposed algorithm (trajectory library and baseline algorithm is also included)
+1. To install the pip package of the proposed algorithm (trajectory library and baseline algorithm is also included).
     ```
     $ pip install .
+    ```
+    for linux user, `jemalloc` can be installed for improved performance. If `jemalloc` can not be installed, please remove this line in `setup.py`.
+    ```
+    libraries = [] if sys.platform=="win32" else ['jemalloc'],
     ```
 1. To reproduce the result in *A Graphical Method for Designing Time-Optimal Non-Cartesian Gradient Waveforms*, please run `benchmark.py`.
     ```
     $ python benchmark.py
     ```
-1. To switch between different solver, edit this line in `benchmark.py`
+1. To switch between different solver, edit this line in `benchmark.py`.
     ```
     # select solver
     mag.setSolverMtg(0) # 0 for MAG solver, 1 for MTG solver
