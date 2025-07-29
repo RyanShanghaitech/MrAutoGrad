@@ -18,7 +18,7 @@
     # select solver
     mag.setSolverMtg(0) # 0 for MAG solver, 1 for MTG solver
     ```
-1. To switch between different trajectories, edit thes lines in `benchmark.py`, please leave one line uncommented and comment out other lines.
+1. To switch between different trajectories, edit these lines in `benchmark.py`, please leave one line uncommented and comment out the other lines.
     ```
     def eval():
         global nAx
