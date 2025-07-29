@@ -51,7 +51,6 @@ def calGrad4ExSamp\
     dGLim: float64 = 50e-3 * 42.5756e6 * 0.256 / 256,
     dDt: float64 = 10e-6,
     
-    arrP: NDArray = np.empty((0,1)),
     arrK: NDArray = np.empty((0,3)),
 ) -> NDArray:
     return ext.calGrad4ExSamp\
@@ -64,7 +63,6 @@ def calGrad4ExSamp\
         float64(dGLim), 
         float64(dDt), 
         
-        arrP,
         arrK
     )
     

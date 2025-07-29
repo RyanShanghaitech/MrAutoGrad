@@ -355,14 +355,13 @@ PyObject* calGrad4ExFunc(PyObject* self, PyObject* const* args, Py_ssize_t narg)
 
 PyObject* calGrad4ExSamp(PyObject* self, PyObject* const* args, Py_ssize_t narg)
 {
-    checkNarg(narg, 8);
+    checkNarg(narg, 7);
 
     MrTraj::GeoPara sGeoPara;
     MrTraj::GradPara sGradPara;
     getGeoGradPara(args, &sGeoPara, &sGradPara);
 
-    vd vdP; cvtNpa2Vd(args[6], &vdP);
-    vv3 vv3K; cvtNpa2Vv3(args[7], &vv3K);
+    vv3 vv3K; cvtNpa2Vv3(args[6], &vv3K);
 
     ExTraj traj
     (

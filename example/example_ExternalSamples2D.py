@@ -31,7 +31,7 @@ arrP = linspace(pLim[0], pLim[1], 1000)
 arrK = Rosette(arrP).T
 
 # derive slew-rate constrained trajectory
-arrG = mag.calGrad4ExSamp(False, fov, nPix, sLim, gLim, dtGrad, arrP, arrK)
+arrG = mag.calGrad4ExSamp(False, fov, nPix, sLim, gLim, dtGrad, arrK)
 nRO, _ = arrG.shape
 
 arrS = diff(arrG, axis=0)/dtGrad
