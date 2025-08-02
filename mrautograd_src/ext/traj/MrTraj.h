@@ -5,8 +5,11 @@
 #include <string>
 #include <stdexcept>
 #include <ctime>
-#include "../mtg/header.h"
 #include "Spline.h"
+
+#ifdef MTG_EXIST
+    #include "../mtg/header.h"
+#endif
 
 bool g_bUseMtg_MrTraj = false; // use Lustig's MinTimeGrad solver
 int64_t g_lOsOw_MrTraj = -1; // oversample ratio, overwrite set value
@@ -280,6 +283,7 @@ protected:
 
     static bool calGRO_MTG(lv3* plv3G, ld* pldP, const vd& vdC, const GradPara& sGradPara)
     {
+#ifdef MTG_EXIST
         bool bRet = true;
         const double& dSLim = sGradPara.dSLim;
         const double& dGLim = sGradPara.dGLim;
@@ -331,16 +335,17 @@ protected:
         free(p_sdot);  free(p_sta);   free(p_stb);
 
         return bRet;
+#else
+        char sErrMsg[] = "[ERROR] MTG removed due to copyright.";
+        puts(sErrMsg);
+        throw std::runtime_error(sErrMsg);
+        return false;
+#endif
     }
 
     static bool calGRO(lv3* plv3G, ld* pldP, const TrajFunc& tf, const GradPara& sGradPara, int64_t lOs=8)
     {
         bool bRet = true;
-        const double& dSLim = sGradPara.dSLim;
-        const double& dGLim = sGradPara.dGLim;
-        const double& dDt = sGradPara.dDt;
-        const bool& bMaxG0 = sGradPara.bMaxG0;
-        const bool& bMaxG1 = sGradPara.bMaxG1;
 
         // calculate gradient
         if(!g_bUseMtg_MrTraj)
@@ -375,12 +380,6 @@ protected:
     static bool calGRO(lv3* plv3G, ld* pldP, const vv3& vv3TrajSamp, const GradPara& sGradPara, int64_t lOs=8)
     {
         bool bRet = true;
-        const double& dSLim = sGradPara.dSLim;
-        const double& dGLim = sGradPara.dGLim;
-        const double& dDt = sGradPara.dDt;
-        const bool& bMaxG0 = sGradPara.bMaxG0;
-        const bool& bMaxG1 = sGradPara.bMaxG1;
-        
         int64_t lNTrajSamp = vv3TrajSamp.size();
 
         // calculate gradient

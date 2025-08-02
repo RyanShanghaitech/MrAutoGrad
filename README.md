@@ -1,14 +1,19 @@
 # Magnetic Resonance Automatic Gradient Toolbox (MRAutoGrad, MAG)
 
-## Usage
-1. To install the pip package of the proposed algorithm (trajectory library and baseline algorithm is also included).
-    ```
-    $ pip install .
-    ```
-    for linux user, `jemalloc` can be installed for improved performance. If `jemalloc` can not be installed, please remove this line in `setup.py`.
-    ```
-    libraries = [] if sys.platform=="win32" else ['jemalloc'],
-    ```
+## Introduction
+This toolbox is a pip package with C++ backend. The pip package can be called via Python interface to generate gradient waveforms for built-in and external trajectories. The C++ source code (in `mrautograd_src/ext/`) can be ported to other pulse sequence project like UIH's Adept project for gradient waveform calculation.
+
+## Install
+To install the pip package of the proposed algorithm (including trajectory library built on it):
+```
+$ pip install .
+```
+for linux user, `jemalloc` can be installed for improved performance. If `jemalloc` can not be installed, please remove this line in `setup.py`.
+```
+libraries = [] if sys.platform=="win32" else ['jemalloc'],
+```
+
+## Reproduce The Paper
 1. To reproduce the result in *A Graphical Method for Designing Time-Optimal Non-Cartesian Gradient Waveforms*, please run `benchmark.py`.
     ```
     $ python benchmark.py
@@ -18,7 +23,8 @@
     # select solver
     mag.setSolverMtg(0) # 0 for MAG solver, 1 for MTG solver
     ```
-1. To switch between different trajectories, edit these lines in `benchmark.py`, please leave one line uncommented and comment out the other lines.
+    Note that `MTG` solver might be unavailable in public repository due to copyright limit. The private repository which contiains `MTG` solver can be requested from the owner of this project via email.
+1. To switch between different trajectories, edit these lines in `benchmark.py`, please leave one line uncommented and the other commented.
     ```
     def eval():
         global nAx
@@ -37,3 +43,6 @@
     MAG Nit: 10122
     Elapsed time: 33.782 ms
     ```
+
+## Examples
+Examples for generating gradient waveforms for either built-in trajectory or external trajectory (expressed by trajectory function or trajectory samples) can be found in `example` folder.

@@ -4,7 +4,7 @@ from matplotlib.pyplot import *
 from numpy.linalg import norm
 
 # select solver
-mag.setSolverMtg(0) # 0 for MAG solver, 1 for MTG solver
+mag.setSolverMtg(1) # 0 for MAG solver, 1 for MTG solver
 
 # arguments
 gamma = 42.5756e6

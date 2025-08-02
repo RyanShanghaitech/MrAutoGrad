@@ -25,7 +25,7 @@ public:
         m_vdY = vd(vdY);
 
         const int64_t lN = m_vdX.size();
-        if (lN < 2 || m_vdY.size() != lN)
+        if (lN < 2 || (int64_t)m_vdY.size() != lN)
         {
             throw std::invalid_argument("Input vectors must have the same size and at least 2 points.");
             bRet &= false;
