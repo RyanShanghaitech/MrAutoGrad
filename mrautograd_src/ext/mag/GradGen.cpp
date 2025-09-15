@@ -104,28 +104,6 @@ double GradGen::getCurRad(double dP)
     return dNume/dDeno;
 }
 
-double GradGen::getDp(const v3& v3G, double dDt, double dP, double dSignDp)
-{
-    // solve `ΔP` by RK2
-    double dDl = v3::norm(v3G)*dDt;
-    // k1
-    double dK1;
-    {
-        v3 v3DkDp; m_ptfTraj->getDkDp(&v3DkDp, dP);
-        double dDlDp = v3::norm(v3DkDp)*dSignDp;
-        dK1 = 1e0/dDlDp;
-    }
-    // k2
-    double dK2;
-    {
-        v3 v3DkDp; m_ptfTraj->getDkDp(&v3DkDp, dP+dK1*dDl);
-        double dDlDp = v3::norm(v3DkDp)*dSignDp;
-        dK2 = 1e0/dDlDp;
-    }
-    double dDp = dDl*(dK1 + dK2)/2e0;
-    return dDp;
-}
-
 #if 1
 
 double GradGen::getDp(const v3& v3GPrev, const v3& v3GThis, double dDt, double dPPrev, double dPThis, double dSignDp)
@@ -205,8 +183,8 @@ bool GradGen::compute(lv3* plv3G, ld* pldP)
     m_vdGNorm_Bac.clear(); m_vdGNorm_Bac.push_back(v3::norm(v3G1));
     while (!g_bSFS_Mag)
     {
-        double dP = *m_vdP_Bac.rbegin();
-        v3 v3G = *m_vv3G_Bac.rbegin();
+        double dP = m_vdP_Bac.back();
+        v3 v3G = m_vv3G_Bac.back();
         // update grad
         v3 v3GUnit;
         double dGNorm;
@@ -216,11 +194,11 @@ bool GradGen::compute(lv3* plv3G, ld* pldP)
         v3G = v3GUnit*dGNorm;
 
         // update para
-        dP += getDp(*m_vv3G_Bac.rbegin(), v3G, m_dDt/m_lOs, *m_vdP_Bac.rbegin(), dP, (dP0-dP1)/std::fabs(dP0-dP1));
+        dP += getDp(m_vv3G_Bac.back(), v3G, m_dDt/m_lOs, m_vdP_Bac.back(), dP, (dP0-dP1)/std::fabs(dP0-dP1));
         // dP += getDp(v3G, m_dDt/m_lOs, dP, (dP0-dP1)/std::fabs(dP0-dP1));
 
         // stop or append
-        if (std::fabs(*m_vdP_Bac.rbegin() - dP1) >= (1-1e-6)*std::fabs(dP0 - dP1))
+        if (std::fabs(m_vdP_Bac.back() - dP1) >= (1-1e-6)*std::fabs(dP0 - dP1))
         {
             break;
         }
@@ -293,10 +271,11 @@ bool GradGen::compute(lv3* plv3G, ld* pldP)
     }
     lNit += m_vdP_For.size();
     
-    // {
-    //     int64_t MAG_Nit = lNit;
-    //     PRINT(MAG_Nit);
-    // }
+    if (g_bDbgPrint)
+    {
+        int64_t MAG_Nit = lNit;
+        PRINT(MAG_Nit);
+    }
 
     // deoversamp the para. vec.
     {

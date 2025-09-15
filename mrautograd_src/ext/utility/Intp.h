@@ -36,7 +36,7 @@ protected:
         if (lN == 2 && vdX[0] == vdX[1]) return false;
         for (int64_t i = 2; i < lN; ++i)
         {
-            if ((vdX[i]-vdX[i - 1]) * (vdX[i - 1]-vdX[i - 2]) <= 0) return false;
+            if ((vdX[i]-vdX[i - 1]) * (vdX[i - 1]-vdX[i - 2]) < 0) return false;
         }
         if (vdX.back() < vdX.front())
         {

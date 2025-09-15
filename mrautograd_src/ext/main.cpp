@@ -294,9 +294,9 @@ public:
             dP1
         );
 
-        // TIC;
+        TIC;
         calGRO(&m_lv3Grad, &m_ldP, *ptfTrajFunc, m_sGradPara, 8);
-        // TOC;
+        TOC;
     }
 
     ExTraj(const GeoPara& sGeoPara, const GradPara& sGradPara, const vv3& vv3K):
@@ -306,9 +306,9 @@ public:
         m_sGradPara = sGradPara;
         m_lNAcq = 1;
 
-        // TIC;
+        TIC;
         calGRO(&m_lv3Grad, &m_ldP, vv3K, m_sGradPara, 8);
-        // TOC;
+        TOC;
     }
 
     ~ExTraj()
@@ -705,6 +705,15 @@ PyObject* setMagTrajRep(PyObject* self, PyObject* const* args, Py_ssize_t narg)
     return Py_None;
 }
 
+PyObject* setDbgPrint(PyObject* self, PyObject* const* args, Py_ssize_t narg)
+{
+    extern bool g_bDbgPrint;
+    checkNarg(narg, 1);
+    g_bDbgPrint = PyLong_AsLong(args[0]);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 vv3 vv3Test;
 PyObject* getTestVal(PyObject* self, PyObject* const* args, Py_ssize_t narg)
 {
@@ -736,6 +745,7 @@ static PyMethodDef aMeth[] =
     {"setMagSFS", (PyCFunction)setMagSFS, METH_FASTCALL, ""},
     {"setMagGradRep", (PyCFunction)setMagGradRep, METH_FASTCALL, ""},
     {"setMagTrajRep", (PyCFunction)setMagTrajRep, METH_FASTCALL, ""},
+    {"setDbgPrint", (PyCFunction)setDbgPrint, METH_FASTCALL, ""},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

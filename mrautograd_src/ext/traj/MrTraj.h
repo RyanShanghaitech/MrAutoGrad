@@ -221,6 +221,24 @@ protected:
 
         return bRet;
     }
+    
+    static bool calGRO_MAG(lv3* plv3G, ld* pldP, const vv3& vv3TrajSamp, const GradPara& sGradPara, int64_t lOs=8)
+    {
+        bool bRet = true;
+        const double& dSLim = sGradPara.dSLim;
+        const double& dGLim = sGradPara.dGLim;
+        const double& dDt = sGradPara.dDt;
+        const bool& bMaxG0 = sGradPara.bMaxG0;
+        const bool& bMaxG1 = sGradPara.bMaxG1;
+        
+        double dGNorm0 = bMaxG0?1e15:0e0;
+        double dGNorm1 = bMaxG1?1e15:0e0;
+
+        GradGen gg(vv3TrajSamp, dSLim, dGLim, dDt, lOs, dGNorm0, dGNorm1);
+        bRet &= gg.compute(plv3G, pldP);
+
+        return bRet;
+    }
 
     static bool calGRO_MTG(lv3* plv3G, ld* pldP, const vd& vdC, const GradPara& sGradPara)
     {
@@ -321,8 +339,7 @@ protected:
         // calculate gradient
         if(!g_bUseMtg_MrTraj)
         {
-            Spline_TrajFunc sptf(vv3TrajSamp);
-            bRet &= calGRO_MAG(plv3G, pldP, sptf, sGradPara, lOs);
+            bRet &= calGRO_MAG(plv3G, pldP, vv3TrajSamp, sGradPara, lOs);
         }
         else
         {
@@ -352,9 +369,9 @@ protected:
         const double& dDt = sGradPara.dDt;
         
         // calculate GRO
-        // TIC;
+        TIC;
         calGRO(plv3GRO, pldP, tfBaseTraj, sGradPara, lOs);
-        // TOC;
+        TOC;
 
         // if GEnd needs to be fixed
         if (g_bFixGEnd_MrTraj)

@@ -8,6 +8,7 @@ useJemalloc = find_library("jemalloc") is not None
 
 _sources = \
 [
+    './mrautograd_src/ext/utility/global.cpp',
     './mrautograd_src/ext/utility/v3.cpp',
     './mrautograd_src/ext/mag/GradGen.cpp',
     './mrautograd_src/ext/main.cpp',

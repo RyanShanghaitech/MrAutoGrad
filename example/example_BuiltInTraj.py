@@ -6,30 +6,36 @@ from numpy.linalg import norm
 gamma = 42.5756e6
 fov = 0.256
 nPix = 256
-sLim = 100 * gamma * fov/nPix
-gLim = 120e-3 * gamma * fov/nPix
+sLim = 50 * gamma * fov/nPix
+gLim = 20e-3 * gamma * fov/nPix
 dtGrad = 10e-6
 dtADC = 2.5e-6
 argCom = dict(dFov=fov, lNPix=nPix, dSLim=sLim, dGLim=gLim, dDt=dtGrad)
 
-mag.setTrajRev(0)
 mag.setSolverMtg(0)
+mag.setTrajRev(0)
 mag.setGoldAng(1)
+mag.setShuf(0)
 mag.setMaxG0(0)
 mag.setMaxG1(0)
 mag.setExGEnd(0)
 mag.setMagOv(8)
+mag.setMagSFS(0)
+mag.setMagGradRep(1)
+mag.setMagTrajRep(1)
+mag.setDbgPrint(1)
 
 # calculate gradient
-# lstArrK0, lstArrGrad = mag.getG_Spiral(bIs3D=0, **argCom); nAx = 2
+lstArrK0, lstArrGrad = mag.getG_Spiral(bIs3D=0, **argCom); nAx = 2
 # lstArrK0, lstArrGrad = mag.getG_VarDenSpiral(bIs3D=0, **argCom); nAx = 2
 # lstArrK0, lstArrGrad = mag.getG_Rosette(bIs3D=0, **argCom); nAx = 2
 # lstArrK0, lstArrGrad = mag.getG_Rosette_Trad(**argCom, dOm1=10*pi, dOm2=8*pi, dTmax=1, dTacq=2e-03); nAx = 2
 # lstArrK0, lstArrGrad = mag.getG_Shell3d(**argCom); nAx = 3
-lstArrK0, lstArrGrad = mag.getG_Yarnball(**argCom); nAx = 3
+# lstArrK0, lstArrGrad = mag.getG_Yarnball(**argCom); nAx = 3
 # lstArrK0, lstArrGrad = mag.getG_Seiffert(**argCom); nAx = 3
 # lstArrK0, lstArrGrad = mag.getG_Cones(**argCom); nAx = 3
 
+print("")
 print(f"Intlea Num.: {len(lstArrGrad)}")
 nRO_Max = amax([arrG.shape[0] for arrG in lstArrGrad])
 print(f"Tacq: {nRO_Max*dtGrad*1e3:.3f} ms")
