@@ -13,35 +13,38 @@ dtGrad = 10e-6
 dtADC = 2.5e-6
 
 # Rosette
-nAx = 2
 om1 = 5*pi
 om2 = 3*pi
-def Rosette(t):
+pLim = [0,1]
+def TrajFunc(t):
     rho = 0.5*sin(om1*t)
     return array\
     ([
         rho*cos(om2*t),
         rho*sin(om2*t),
-        0*t
+        zeros_like(t)
     ])
-    
-pLim = [0,1]
 
+# sample
 arrP = linspace(pLim[0], pLim[1], 1000)
-arrK = Rosette(arrP).T
+arrK = TrajFunc(arrP).T
+nAx = 2
 
 # derive slew-rate constrained trajectory
-arrG = mag.calGrad4ExSamp(False, fov, nPix, sLim, gLim, dtGrad, arrK)
+for i in range(1):
+    arrG, _ = mag.calGrad4ExSamp(False, fov, nPix, sLim, gLim, dtGrad, arrK)
 nRO, _ = arrG.shape
 
 arrS = diff(arrG, axis=0)/dtGrad
 print(f"sMax: {max(norm(arrS,axis=-1))/(42.58e6)*(nPix/fov)}")
 
 arrK, _ = mag.cvtGrad2Traj(arrG, dtGrad, dtADC, 0.5)
+arrK += TrajFunc(pLim[0])
+print(f"Err: {norm(arrK[-1,:]-TrajFunc(pLim[1])):.1e}")
 
 # derive reference trajectory
 arrP_Ref = linspace(pLim[0], pLim[1], int(1e4))
-arrK_Ref = Rosette(arrP_Ref).T
+arrK_Ref = TrajFunc(arrP_Ref).T
 
 # plot
 figure(figsize=(20,10), dpi=120)

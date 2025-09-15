@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../mag/global.h"
-#include "../mag/v3.h"
+#include "../utility/global.h"
+#include "../utility/v3.h"
 // #include "../mag/GradGen.h" // VS2010 does not like this...
 
 /* 

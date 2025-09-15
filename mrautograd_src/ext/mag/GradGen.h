@@ -5,9 +5,80 @@
 #include <tuple>
 #include <cmath>
 #include <stdexcept>
-#include "global.h"
-#include "v3.h"
+#include <algorithm>
+#include "../utility/global.h"
+#include "../utility/v3.h"
 #include "../traj/TrajFunc.h"
+#include "../utility/SplineIntp.h"
+
+// virtual TrajFunc, take in discrete samples and construct a Segmentied Cubic Polynomial function
+class Spline_TrajFunc: public TrajFunc
+{
+public:
+    typedef std::vector<v3> vv3;
+    typedef std::vector<double> vd;
+
+    Spline_TrajFunc() {}
+
+    Spline_TrajFunc(const vv3& vv3K)
+    {
+        int64_t lNTrajSamp = vv3K.size();
+
+        vd vdP(lNTrajSamp);
+        for (int64_t i = 0; i < lNTrajSamp; ++i)
+        {
+            vdP[i] = i;
+        }
+
+        vd vdX(lNTrajSamp), vdY(lNTrajSamp), vdZ(lNTrajSamp);
+        for (int64_t i = 0; i < lNTrajSamp; ++i)
+        {
+           vdX[i] =  vv3K[i].m_dX;
+           vdY[i] =  vv3K[i].m_dY;
+           vdZ[i] =  vv3K[i].m_dZ;
+        }
+
+        m_intpX.m_eSearchMode = Intp::EUniform;
+        m_intpY.m_eSearchMode = Intp::EUniform;
+        m_intpZ.m_eSearchMode = Intp::EUniform;
+
+        m_intpX.fit(vdP, vdX); 
+        m_intpY.fit(vdP, vdY);
+        m_intpZ.fit(vdP, vdZ);
+
+        m_dP0 = *vdP.begin();
+        m_dP1 = *vdP.rbegin();
+    }
+    
+    bool getK(v3* pv3K, double dP) const
+    {
+        pv3K->m_dX = m_intpX.eval(dP);
+        pv3K->m_dY = m_intpY.eval(dP);
+        pv3K->m_dZ = m_intpZ.eval(dP);
+
+        return true;
+    }
+
+    bool getDkDp(v3* pv3K, double dP) const
+    {
+        pv3K->m_dX = m_intpX.eval(dP, 1);
+        pv3K->m_dY = m_intpY.eval(dP, 1);
+        pv3K->m_dZ = m_intpZ.eval(dP, 1);
+
+        return true;
+    }
+
+    bool getD2kDp2(v3* pv3K, double dP) const
+    {
+        pv3K->m_dX = m_intpX.eval(dP, 2);
+        pv3K->m_dY = m_intpY.eval(dP, 2);
+        pv3K->m_dZ = m_intpZ.eval(dP, 2);
+
+        return true;
+    }
+protected:
+    SplineIntp m_intpX, m_intpY, m_intpZ;
+};
 
 class GradGen
 {
@@ -25,6 +96,13 @@ public:
     GradGen
     (
         const TrajFunc* ptTraj,
+        double dSLim, double dGLim,
+        double dDt=10e-6, int64_t lOs=10, 
+        double dG0Norm=0e0, double dG1Norm=0e0
+    );
+    GradGen
+    (
+        const vv3& vv3TrajSamp,
         double dSLim, double dGLim,
         double dDt=10e-6, int64_t lOs=10, 
         double dG0Norm=0e0, double dG1Norm=0e0
@@ -48,11 +126,20 @@ public:
     static bool revGrad(v3* pv3M0Dst, lv3* plv3Dst, const v3& v3M0Src, const lv3& lv3Src, double dDt);
     static bool calM0(v3* pv3M0, const lv3& lv3Grad, double dDt, const v3& v3GBegin=v3(0,0,0), const v3& v3GEnd=v3(0,0,0));
 private:
-    const TrajFunc* m_ptTraj;
+    Spline_TrajFunc m_sptfTraj;
+    const TrajFunc* m_ptfTraj;
     const double m_dSLim, m_dGLim;
     const double m_dDt;
     const int64_t m_lOs;
     const double m_dG0Norm, m_dG1Norm;
+
+    // reserved vector for faster computation
+    vd m_vdP_Bac;
+    vv3 m_vv3G_Bac;
+    vd m_vdGNorm_Bac;
+
+    vd m_vdP_For;
+    vv3 m_vv3G_For;
 
     bool sovQDE(double* pdSol0, double* pdSol1, double dA, double dB, double dC);
     double getCurRad(double dP);

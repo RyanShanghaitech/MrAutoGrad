@@ -53,31 +53,8 @@ public:
         m_lNAcq = m_lNRot*m_lNStack;
 
         m_dRotAngInc = calRotAngInc(m_lNRot);
-
-        // calculate average ΔTE
-        ld ldP;
-        TIC;
-        calGrad(&m_v3BaseM0PE, &m_lv3BaseGRO, &ldP, &m_lNWait, &m_lNSamp, *m_ptfBaseTraj, m_sGradPara, bMaxG0&&bMaxG1?2:8);
-        TOC;
         
-        if (ldP.size() != 0)
-        {
-            ll llEchoIdx;
-            ld::const_iterator ildp = ldP.begin();
-            for (int64_t i = 0; i < (int64_t)ldP.size(); ++i)
-            {
-                if (std::fmod(*ildp*dOm1, M_PI) > M_PI/2e0 && std::fmod(*std::next(ildp)*dOm1, M_PI) <= M_PI/2e0)
-                {
-                    llEchoIdx.push_back(i);
-                }
-                ++ildp;
-            }
-            m_dAvrDTE = m_sGradPara.dDt * (*llEchoIdx.rbegin() - *llEchoIdx.begin())/(llEchoIdx.size() - 1);
-        }
-        else // parameter sequence unavailable
-        {
-            m_dAvrDTE = -1e0;
-        }
+        calGrad(&m_v3BaseM0PE, &m_lv3BaseGRO, NULL, &m_lNWait, &m_lNSamp, *m_ptfBaseTraj, m_sGradPara, bMaxG0&&bMaxG1?2:8);
     }
     
     virtual ~Rosette()
@@ -85,12 +62,8 @@ public:
         delete m_ptfBaseTraj;
     }
 
-    double getAvrDTE()
-    { return m_dAvrDTE; }
-
 protected:
     TrajFunc* m_ptfBaseTraj;
-    double m_dAvrDTE;
 };
 
 class Rosette_Trad: public MrTraj_2D

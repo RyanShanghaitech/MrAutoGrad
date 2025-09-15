@@ -28,7 +28,7 @@ def Rosette(t):
 pLim = [0,1]
 
 # derive slew-rate constrained trajectory
-arrG = mag.calGrad4ExFunc(False, fov, nPix, sLim, gLim, dtGrad, Rosette, None, None, pLim[0], pLim[1])
+arrG, _ = mag.calGrad4ExFunc(False, fov, nPix, sLim, gLim, dtGrad, Rosette, None, None, pLim[0], pLim[1])
 nRO, _ = arrG.shape
 
 arrS = diff(arrG, axis=0)/dtGrad

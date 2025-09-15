@@ -56,18 +56,14 @@ public:
         m_vlNWait.resize(m_lNRot);
         m_vlNSamp.resize(m_lNRot);
 
-        TIC;
         for(int64_t i = 0; i < m_lNRot; ++i)
         {
-            // printf("%ld/%ld\n", i, m_lNRot); // test
-
             double dTht0 = i*m_dRotInc;
             m_vptfBaseTraj[i] = new Yarnball_TrajFunc(dRhoPhi, dTht0);
             if(!m_vptfBaseTraj[i]) throw std::runtime_error("out of memory");
 
             calGrad(&m_vv3BaseM0PE[i], &m_vlv3BaseGRO[i], NULL, &m_vlNWait[i], &m_vlNSamp[i], *m_vptfBaseTraj[i], m_sGradPara, bMaxG0&&bMaxG1?2:8);
         }
-        TOC;
     }
     
     virtual ~Yarnball()

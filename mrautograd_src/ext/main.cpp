@@ -14,7 +14,7 @@
 #include "traj/Yarnball.h"
 #include "traj/Seiffert.h"
 #include "traj/Cones.h"
-#include "traj/Spline.h"
+#include "utility/SplineIntp.h"
 
 bool g_bTrajRev_Main (0);
 bool g_bTrajGoldAng_Main (0);
@@ -26,6 +26,7 @@ typedef std::vector<double> vd;
 typedef std::vector<int64_t> vl;
 typedef std::vector<v3> vv3;
 typedef std::list<v3> lv3;
+typedef std::list<double> ld;
 typedef std::vector<vv3> vvv3;
 
 PyObject* cvtVv3toNpa(vv3& vv3Src)
@@ -44,6 +45,26 @@ PyObject* cvtVv3toNpa(vv3& vv3Src)
         *(double*)PyArray_GETPTR2((PyArrayObject*)ppyoNpa, i, 0) = vv3Src[i].m_dX;
         *(double*)PyArray_GETPTR2((PyArrayObject*)ppyoNpa, i, 1) = vv3Src[i].m_dY;
         *(double*)PyArray_GETPTR2((PyArrayObject*)ppyoNpa, i, 2) = vv3Src[i].m_dZ;
+    }
+
+    return ppyoNpa;
+}
+
+PyObject* cvtVdtoNpa(const std::vector<double>& vdSrc)
+{
+    int iD0 = vdSrc.size();
+
+    // allocate numpy array
+    PyObject* ppyoNpa;
+    {
+        npy_intp aDims[] = {iD0};
+        ppyoNpa = PyArray_ZEROS(1, aDims, NPY_FLOAT64, 0);
+    }
+
+    // fill the data in
+    for (int64_t i = 0; i < (int)vdSrc.size(); ++i)
+    {
+        *(double*)PyArray_GETPTR1((PyArrayObject*)ppyoNpa, i) = vdSrc[i];
     }
 
     return ppyoNpa;
@@ -273,9 +294,9 @@ public:
             dP1
         );
 
-        TIC;
-        calGRO(&m_lv3Grad, NULL, *ptfTrajFunc, m_sGradPara, 8);
-        TOC;
+        // TIC;
+        calGRO(&m_lv3Grad, &m_ldP, *ptfTrajFunc, m_sGradPara, 8);
+        // TOC;
     }
 
     ExTraj(const GeoPara& sGeoPara, const GradPara& sGradPara, const vv3& vv3K):
@@ -285,9 +306,9 @@ public:
         m_sGradPara = sGradPara;
         m_lNAcq = 1;
 
-        TIC;
-        calGRO(&m_lv3Grad, NULL, vv3K, m_sGradPara, 8);
-        TOC;
+        // TIC;
+        calGRO(&m_lv3Grad, &m_ldP, vv3K, m_sGradPara, 8);
+        // TOC;
     }
 
     ~ExTraj()
@@ -313,6 +334,13 @@ public:
         return bRet;
     }
 
+    bool getPRO(ld* ldP, int64_t lIAcq) const // get parameter sequence of GRO
+    {
+        bool bRet = true;
+        *ldP = m_ldP;
+        return bRet;
+    }
+
     int64_t getNWait(int64_t lIAcq) const
     {
         return 0;
@@ -326,6 +354,7 @@ public:
 private:
     TrajFunc* ptfTrajFunc;
     lv3 m_lv3Grad;
+    ld m_ldP;
 };
 
 PyObject* calGrad4ExFunc(PyObject* self, PyObject* const* args, Py_ssize_t narg)
@@ -348,9 +377,12 @@ PyObject* calGrad4ExFunc(PyObject* self, PyObject* const* args, Py_ssize_t narg)
 
     lv3 lv3G;
     traj.getGRO(&lv3G, 0);
+    ld ldP;
+    traj.getPRO(&ldP, 0);
 
     vv3 vv3G(lv3G.begin(), lv3G.end());
-    return cvtVv3toNpa(vv3G);
+    vd vdP(ldP.begin(), ldP.end());
+    return Py_BuildValue("OO", cvtVv3toNpa(vv3G), cvtVdtoNpa(vdP));
 }
 
 PyObject* calGrad4ExSamp(PyObject* self, PyObject* const* args, Py_ssize_t narg)
@@ -371,9 +403,12 @@ PyObject* calGrad4ExSamp(PyObject* self, PyObject* const* args, Py_ssize_t narg)
     
     lv3 lv3G;
     traj.getGRO(&lv3G, 0);
+    ld ldP;
+    traj.getPRO(&ldP, 0);
 
     vv3 vv3G(lv3G.begin(), lv3G.end());
-    return cvtVv3toNpa(vv3G);
+    vd vdP(ldP.begin(), ldP.end());
+    return Py_BuildValue("OO", cvtVv3toNpa(vv3G), cvtVdtoNpa(vdP));
 }
 
 bool getG(MrTraj* pmt, vv3* pvv3M0PE, vvv3* pvvv3GRO, bool bShuf)
@@ -626,19 +661,46 @@ PyObject* setMaxG1(PyObject* self, PyObject* const* args, Py_ssize_t narg)
 
 PyObject* setExGEnd(PyObject* self, PyObject* const* args, Py_ssize_t narg)
 {
-    extern bool g_bExGEnd_MAG;
+    extern bool g_bFixGEnd_MrTraj;
     
     checkNarg(narg, 1);
-    g_bExGEnd_MAG = PyLong_AsLong(args[0]);
+    g_bFixGEnd_MrTraj = PyLong_AsLong(args[0]);
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-PyObject* setMagOs(PyObject* self, PyObject* const* args, Py_ssize_t narg)
+PyObject* setMagOv(PyObject* self, PyObject* const* args, Py_ssize_t narg)
 {
-    extern int64_t g_lOsOw_MrTraj;
+    extern int64_t g_lOv_Mag;
     checkNarg(narg, 1);
-    g_lOsOw_MrTraj = PyLong_AsLong(args[0]);
+    g_lOv_Mag = PyLong_AsLong(args[0]);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+PyObject* setMagSFS(PyObject* self, PyObject* const* args, Py_ssize_t narg)
+{
+    extern bool g_bSFS_Mag;
+    checkNarg(narg, 1);
+    g_bSFS_Mag = PyLong_AsLong(args[0]);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+PyObject* setMagGradRep(PyObject* self, PyObject* const* args, Py_ssize_t narg)
+{
+    extern bool g_bGradRep_Mag;
+    checkNarg(narg, 1);
+    g_bGradRep_Mag = PyLong_AsLong(args[0]);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+PyObject* setMagTrajRep(PyObject* self, PyObject* const* args, Py_ssize_t narg)
+{
+    extern bool g_bTrajRep_Mag;
+    checkNarg(narg, 1);
+    g_bTrajRep_Mag = PyLong_AsLong(args[0]);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -670,7 +732,10 @@ static PyMethodDef aMeth[] =
     {"setMaxG1", (PyCFunction)setMaxG1, METH_FASTCALL, ""},
     {"setExGEnd", (PyCFunction)setExGEnd, METH_FASTCALL, ""},
     {"getTestVal", (PyCFunction)getTestVal, METH_FASTCALL, ""},
-    {"setMagOs", (PyCFunction)setMagOs, METH_FASTCALL, ""},
+    {"setMagOv", (PyCFunction)setMagOv, METH_FASTCALL, ""},
+    {"setMagSFS", (PyCFunction)setMagSFS, METH_FASTCALL, ""},
+    {"setMagGradRep", (PyCFunction)setMagGradRep, METH_FASTCALL, ""},
+    {"setMagTrajRep", (PyCFunction)setMagTrajRep, METH_FASTCALL, ""},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

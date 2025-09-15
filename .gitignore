@@ -1,6 +1,12 @@
-figure.pdf
+test*.*
+temp*.*
+*.gif
+*.npy
+*.npz
+*.so
 
-.vscode/
-build/
 dist/
+build/
+.vscode/
 *.egg-info/
+__pycache__/
