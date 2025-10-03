@@ -12,26 +12,26 @@ dtGrad = 10e-6
 dtADC = 2.5e-6
 argCom = dict(dFov=fov, lNPix=nPix, dSLim=sLim, dGLim=gLim, dDt=dtGrad)
 
-mag.setSolverMtg(0)
-mag.setTrajRev(0)
-mag.setGoldAng(1)
-mag.setShuf(0)
-mag.setMaxG0(0)
-mag.setMaxG1(0)
-mag.setExGEnd(0)
-mag.setMagOv(8)
-mag.setMagSFS(0)
-mag.setMagGradRep(1)
-mag.setMagTrajRep(1)
-mag.setDbgPrint(1)
+mag.setSolverMtg(0) # set solver, 0 for proposed method, 1 for baseline method, baseline method may be removed due to copyright reason
+mag.setTrajRev(0) # reverse the trajectory
+mag.setGoldAng(1) # enable golden-angle interleaving (only for 2D)
+mag.setShuf(0) # enable TR-shuffling
+mag.setMaxG0(0) # use maximum possible initial gradient amplitude
+mag.setMaxG1(0) # use maximum possible final gradient amplitude
+mag.setExGEnd(0) # restrict end-value of the graident exactly the same as requested (turn off only for benchmark purpose)
+mag.setMagOv(8) # set oversampling ratio (default: 8, reduce only if hardware performance is too low to support real-time)
+mag.setMagSFS(0) # disable DTFBS (experimental)
+mag.setMagGradRep(1) # enable gradient reparameterization (experimental)
+mag.setMagTrajRep(1) # enable trajectory reparameterization (experimental)
+mag.setDbgPrint(1) # enable debug info (for benchmark purpose)
 
 # calculate gradient
-lstArrK0, lstArrGrad = mag.getG_Spiral(bIs3D=0, **argCom); nAx = 2
+# lstArrK0, lstArrGrad = mag.getG_Spiral(bIs3D=0, **argCom); nAx = 2
 # lstArrK0, lstArrGrad = mag.getG_VarDenSpiral(bIs3D=0, **argCom); nAx = 2
 # lstArrK0, lstArrGrad = mag.getG_Rosette(bIs3D=0, **argCom); nAx = 2
 # lstArrK0, lstArrGrad = mag.getG_Rosette_Trad(**argCom, dOm1=10*pi, dOm2=8*pi, dTmax=1, dTacq=2e-03); nAx = 2
 # lstArrK0, lstArrGrad = mag.getG_Shell3d(**argCom); nAx = 3
-# lstArrK0, lstArrGrad = mag.getG_Yarnball(**argCom); nAx = 3
+lstArrK0, lstArrGrad = mag.getG_Yarnball(**argCom); nAx = 3
 # lstArrK0, lstArrGrad = mag.getG_Seiffert(**argCom); nAx = 3
 # lstArrK0, lstArrGrad = mag.getG_Cones(**argCom); nAx = 3
 
