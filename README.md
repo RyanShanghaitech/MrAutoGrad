@@ -8,9 +8,12 @@ This toolbox is a pip package with C++ backend. The pip package can be called vi
 ```bash
 $ conda create -n magtest -y
 $ conda activate magtest
+$ conda install python==3.10 -y
 ```
 
-To install the pip package of the proposed algorithm (including trajectory library built on it), and also the dependencies:
+This package is **NOT** restricted to use `Python 3.10` or `numpy 1.26` (as specified in the `requirements.txt`).  Feel free to adjust at your convenience, just if the package works.
+
+To install the pip package of the proposed algorithm (including the trajectory library built on it), and also the dependencies:
 ```bash
 $ bash install.bash
 ```
@@ -26,5 +29,3 @@ Examples for generating gradient waveforms for either built-in trajectory (traje
 If this project helps you, please cite [our paper](https://arxiv.org/abs/2507.21625):
 
 [1] R. Luo, H. Huang, Q. Miao, J. Xu, P. Hu, and H. Qi, “Real-Time Gradient Waveform Design for Arbitrary k-Space Trajectories,” Sep 9, 2025, arXiv preprint arXiv:2507.21625.
-
-

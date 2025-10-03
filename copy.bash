@@ -8,4 +8,4 @@ cp ../MrAutoGrad_Private/setup.py ./
 cp ../MrAutoGrad_Private/install.bash ./
 cp ../MrAutoGrad_Private/.gitignore ./
 
-rm -r ./mrautograd_src/ext/mtg
+rm -r ./mrautograd_src/ext/mtg # remove the baseline method to respect the copyright
