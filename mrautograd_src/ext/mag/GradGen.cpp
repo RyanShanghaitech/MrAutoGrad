@@ -241,16 +241,16 @@ bool GradGen::compute(lv3* plv3G, ld* pldP)
         v3 v3GUnit;
         double dGNorm, dGNorm_Min;
         bQDESucc = step(&v3GUnit, &dGNorm_Min, &dGNorm, dP, (dP1-dP0)/std::fabs(dP1-dP0), v3G, m_dSLim, m_dDt/m_lOs);
-        if (g_bSFS_Mag && !bQDESucc)
-        {
-            bRet = false;
-            break;
-        }
+        // if (g_bSFS_Mag && !bQDESucc)
+        // {
+        //     bRet = false;
+        //     break;
+        // }
         dGNorm = std::min(dGNorm, m_dGLim);
         dGNorm = std::max(dGNorm, dGNorm_Min);
 
         // interpolation
-        dGNorm = std::min(dGNorm, g_bSFS_Mag?1e15:lintp.eval(dP));
+        dGNorm = std::min(dGNorm, g_bSFS_Mag?std::sqrt(m_dSLim*getCurRad(dP)):lintp.eval(dP));
         v3G = v3GUnit*dGNorm;
 
         // update para
