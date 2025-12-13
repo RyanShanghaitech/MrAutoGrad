@@ -1,4 +1,4 @@
-# Magnetic Resonance Automatic Gradient Toolbox (MRAutoGrad, MAG)
+# Magnetic Resonance Arbitrary Gradient Toolbox (MRArbGrad, MAG)
 
 ## Introduction
 This toolbox is a pip package with C++ backend. The pip package can be called via Python interface to generate **non-Cartesian** gradient waveforms for built-in and external trajectories. The C++ source code (in `mrautograd_src/ext/`) can be ported to other pulse sequence project like UIH's Adept project for gradient waveform calculation.
